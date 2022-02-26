@@ -1,32 +1,47 @@
 package Cigma.pfe.services;
-import Cigma.pfe.models.Client;
+
 import Cigma.pfe.repositories.ClientRepository;
-import Cigma.pfe.repositories.ClientRepositoryImpl;
+import Cigma.pfe.models.Client;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
 
-public class ClientServiceImpl implements ClientService{
-	
-	
-	//ClientRepository clientRepository = new ClientRepositoryImpl();
-	//@Override
-	
-	ClientRepository clientRepository ;
-	
-	public void setClientRepository(ClientRepository clientService) {
-		this.clientRepository = clientService;
-		}
+@Service
 
-	public Client save(Client c) {
-	System.out.println("Service Layer : ClientServiceImpl Level... ");
-	return clientRepository.save(c);
-	}
-	
+public class ClientServiceImpl implements ClientService {
 
-	public ClientServiceImpl() {
-		System.out.println("Call ClientServiceImpl ....");
-	}
-	
-	
-	}
+@Autowired
+ClientRepository clientRepository;
+
+    @Transactional
+
+    public Client save(Client clt) {
+        return clientRepository.save(clt);
+    }
+    @Override
+    @Transactional
+    public Client modify(Client newClt) {
+        Client oldClt = clientRepository.findById(newClt.getId()).get();
+        oldClt.setName(newClt.getName());
+        return clientRepository.save(oldClt);
+    }
+    @Override
+    @Transactional
+    public void remove(long idClt) {
+        clientRepository.deleteById(idClt);
+    }
+    @Override
+    public Client getOne(long idClt) {
+        return clientRepository.findById(idClt).get();
+    }
+    @Override
+    public List<Client> getAll() {
+        return (List<Client>) clientRepository.findAll();
+    }
+
+}
+
 
 
